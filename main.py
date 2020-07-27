@@ -30,8 +30,16 @@ def main():
     #Good practice method of reassigning all elements as WebDataEntity
     soupList[:] = [WebDataEntity(i) for i in soupList]
 
+    #If you try to do this in a regular for loop then you have an infinite loop :(
+    #This is because after you extend the list it keeps going deeper into externals recursively without an endpoint.
+    externalSoupObjs = []
     for x in soupList:
-        x.getXMLText()
+        externalSoupObjs.extend(x.recurseIntoExternalLinks())
+    soupList.extend(externalSoupObjs)
+
+    for x in soupList:
+        x.getCSVText()
+    
            
 
 

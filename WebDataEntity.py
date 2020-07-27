@@ -47,12 +47,12 @@ class WebDataEntity:
         #Isolated links from hypertext found in page
         self._externalLinks = []
         #Rawtext for easy xml writing
-        self._xmlText = ""
+        self._csvText = ""
 
         #initialize if URL is not proper for whatever reason
         if type(URL) is not BeautifulSoup:
             htmlPage = requests.get(URL)
-
+            #print(htmlPage.content)
             #handle screw ups
             try:
                 htmlPage.raise_for_status()
@@ -60,11 +60,12 @@ class WebDataEntity:
                 print("URL passed to WebDataEntity not deemed valid. See constructor")
                 print(damn)
             
-            URL = BeautifulSoup(htmlPage.content, 'html.parser')
+            URL = BeautifulSoup(htmlPage.text)
         self._parsedWebText = URL
 
         self.isolateExternalLinks()
         self.isolateRelevantTags()
+        self.convertTagsToCSV()
 
 
     #store url of all a tags from html
@@ -81,19 +82,43 @@ class WebDataEntity:
         for tag in self._relevantTags:
             for snippet in self._parsedWebText.find_all(tag):
                 self._relevantEntries.append(snippet)
+                #print(snippet)
 
-    def getXMLText(self):
+
+    def convertTagsToCSV(self):
+        #prevent redundancy by clearing the string
+        self._csvText = ""
+
+        """ This part only handles the <table> tags
+            this function will be changed to accomodate 
+            the various ways in which data is stored in tags.
+        """
         #Iterate through each large tag that wraps data
         for parentTag in self._relevantEntries:
             #Iterate through list of rows within a table
             for tableRow in parentTag.find_all('tr'):
                 #For all of the strings within an individual row
                 for string in tableRow.strings:
-                    self._xmlText += string + ', '
-                self._xmlText += '\n'
-            self._xmlText += '------------------------------------\n'
-        print(self._xmlText)
+                    self._csvText += string + ', '
+                self._csvText += '\n'
+            self._csvText += '------------------------------------\n'
+        #
 
+    #Might want to refractor this. Don't want to drink any chalices
+    #Returns a list of WebDataEntities built from the external links of the site.
+    def recurseIntoExternalLinks(self, depth = 4):
+        externalEntities = []
+
+        for link in self._externalLinks[:depth:]:
+            external = WebDataEntity(link)
+            externalEntities.append(external)
+        return externalEntities
+
+
+
+    def getCSVText(self):
+        print(self._csvText)
+        return self._csvText
 
 
     #getters and setters

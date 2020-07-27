@@ -12,8 +12,6 @@ def main():
     ScrubURLList = []
 
     print("Welcome to Isaac's basic web scraper.")
-    #I know its weird. URLS use commas as a special character already so...
-    #We use the accent or single quote because it can't be represented in a URL.
     print("Please input URL(s). If multiple web-pages are desired seperate with spaces")
     
     getTheStringRaw = input()
@@ -37,8 +35,14 @@ def main():
         externalSoupObjs.extend(x.recurseIntoExternalLinks())
     soupList.extend(externalSoupObjs)
 
+    #Get data to write to file
+    dataStr = ""
+    scrapeData = open("scrapeData.csv","a")
     for x in soupList:
-        x.getCSVText()
+        dataStr += x.getCSVText()
+
+    scrapeData.write(dataStr)
+    scrapeData.close()
     
            
 

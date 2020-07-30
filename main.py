@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 from WebDataEntity import WebDataEntity
 from WebDataEntity import verifyURLS
 
-#URL is used in every scope but we wont make it global because practice.
 
 def main():
     ScrubURLList = []
@@ -44,8 +43,6 @@ def main():
     scrapeData.write(dataStr)
     scrapeData.close()
     
-           
-
 
 def storeHTMLData(ListOfURLs):
     htmlStorage = []
@@ -57,7 +54,5 @@ def storeHTMLData(ListOfURLs):
         htmlStorage.append(soup)
     
     return htmlStorage
-    
-
                 
 main()

@@ -31,7 +31,6 @@ def verifyURLS(ListOfURLs):
 
     return fixedList
 
-
 class WebDataEntity:
    
     #Either contructs with a BS object or a direct URL
@@ -101,12 +100,12 @@ class WebDataEntity:
                 for string in tableRow.strings:
                     self._csvText += string + ', '
                 self._csvText += '\n'
-            self._csvText += '------------------------------------\n'
+            self._csvText += '-----------------------TABLE SEPERATOR-----------------------\n'
         #
 
     #Might want to refractor this. Don't want to drink any chalices
     #Returns a list of WebDataEntities built from the external links of the site.
-    def recurseIntoExternalLinks(self, depth = 4):
+    def recurseIntoExternalLinks(self, depth = 10):
         externalEntities = []
 
         for link in self._externalLinks[:depth:]:
@@ -114,12 +113,9 @@ class WebDataEntity:
             externalEntities.append(external)
         return externalEntities
 
-
-
     def getCSVText(self):
         print(self._csvText)
         return self._csvText
-
 
     #getters and setters
     def getSoup(self):
